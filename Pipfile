@@ -4,8 +4,18 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+django-livereload-server = "*"
 
 [dev-packages]
 
 [requires]
 python_version = "3.9"
+
+
+[scripts]
+serve = "python manage.py runserver"
+migrate = "python manage.py migrate"
+makemigrations = "python manage.py makemigrations"
+createsuper = "python manage.py createsuperuser"
+shell = "python manage.py shell"
+lvrld = "python manage.py livereload"

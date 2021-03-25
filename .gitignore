@@ -6,7 +6,6 @@ Pipfile.lock
 __pychache__/
 *.pyc
 .env
-Pipfile
-Pipfile
+migrations/
 todoapp/__pycache__/__init__.cpython-39.pyc
 todoapp/__pycache__/settings.cpython-39.pyc
