@@ -1,0 +1,12 @@
+node_modules/
+*lock
+Pipfile.lock
+.vscode/
+*.sqlite3
+__pychache__/
+*.pyc
+.env
+Pipfile
+Pipfile
+todoapp/__pycache__/__init__.cpython-39.pyc
+todoapp/__pycache__/settings.cpython-39.pyc
