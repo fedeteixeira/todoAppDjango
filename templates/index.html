@@ -1,0 +1,123 @@
+{% extends 'base.html' %} {% block title %} Hola mundo {% endblock title %} {% block content %}
+<h2>New Task</h2>
+<form action="add_todo/" method="POST">
+    {% csrf_token %}
+    <input type="text" class="form-control" class="form-text mb-2 mr-sm-2" name="taskName" placeholder="task name...">
+    <button type="submit" class="btn btn-primary mb-2"> Add Task</button>
+</form>
+
+
+<div class="row">
+    <ul class="list-group">
+        {% for task_item in task_items %}
+        <li class="list-group-item">
+
+            {{task_item.title}}
+
+            <div class="float-end">
+                <form action="delete_task/{{task_item.id}}" method="post">
+                    {% csrf_token %}
+
+                    <button class="btn btn-danger"> 
+                        <span class="fas fa-trash"> </span> 
+                        Delete 
+                    </button>
+                </form>
+            </div>
+
+            <div class="float-end">
+                <form id="editForm">
+                    {% csrf_token %}
+
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="editModal('{{task_item}}','{{task_item.id}}')">
+                        Edit
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Edit</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+
+                                <div class="modal-body">
+                                    <input type="text" class="form-control" class="form-text mb-2 mr-sm-2" id="editInput" name="taskName">
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" onclick="submitForm()">Save changes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+<button onclick="fetchTasks()">fetch</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+
+<script>
+    let task_id = 0;
+    form = document.getElementById("editForm");
+
+    //Events
+    $(document).ready(fetchTasks());
+
+    function editModal(curr_task_title, curr_task_id) {
+        task_id = curr_task_id;
+        document.querySelector("#editInput").value = curr_task_title
+    }
+
+    function fetchTasks() {
+        (async() => {
+
+            let task_items;
+
+            function status() {
+                data = new FormData()
+                data.append("csrfmiddlewaretoken", '{{csrf_token}}')
+                return axios.post('fetch_tasks/', data).then((resp) => {
+                    return resp.data.task_items;
+                });
+            }
+            task_items = await status();
+            task_items.forEach(task_item => {
+                console.log(task_item)
+            });
+        })();
+    }
+
+    function buildTask() {
+        li = document.createElement("li");
+
+    }
+
+    function submitForm() {
+        data = new FormData()
+        data.append("title", document.querySelector("#editInput").value)
+        data.append("csrfmiddlewaretoken", '{{csrf_token}}')
+
+        axios.post('update_task/' + task_id, data)
+            .then(fetchTasks)
+            .catch(errors => console.log(errors))
+    }
+</script>
+
+<style>
+    .show {
+        display: block;
+    }
+</style>
+{% endblock content %}

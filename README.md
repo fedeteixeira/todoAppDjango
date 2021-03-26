@@ -11,5 +11,3 @@
 3. Bootstrap
 4. Font Awesome
 5. Live Reload Django Server
-
-
